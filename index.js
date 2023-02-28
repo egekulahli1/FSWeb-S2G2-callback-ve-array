@@ -5,16 +5,28 @@ const { fifaData } = require('./fifa.js')
 	Verilen datayı parçalayarak aşağıdaki verileri (console.log-ing) elde ederek pratik yapın. 
 	
 	💡 İPUCU: Öncelikle datayı filtrelemek isteyebilirsiniz */
-
+const filter2014Games = fifaData.filter(obj => obj.Year === 2014);
+const stageTypes = fifaData.map(obj => obj.Stage)
 //(a) 2014 Dünya kupası Finali Evsahibi takım ismi (dizide "Home Team Name" anahtarı)
+const final2014Game = (filter2014Games.filter(obj => obj.Stage === "Final" ));
+const final2014Home = final2014Game[0]["Home Team Name"];
 
 //(b) 2014 Dünya kupası Finali Deplasman takım ismi  (dizide "Away Team Name" anahtarı)
-
+const final2014Away = final2014Game[0]["Away Team Name"];
 //(c) 2014 Dünya kupası finali Ev sahibi takım golleri (dizide "Home Team Goals" anahtarı)
-
+const final2014HomeGoals = final2014Game[0]["Home Team Goals"];
 //(d)2014 Dünya kupası finali Deplasman takım golleri  (dizide "Away Team Goals" anahtarı)
-
+const final2014AwayGoals = final2014Game[0]["Away Team Goals"];
 //(e) 2014 Dünya kupası finali kazananı*/
+let winner;
+if (final2014HomeGoals > final2014AwayGoals) {
+  winner = final2014Game[0]['Home Team Name'];
+} else if (final2014AwayGoal > final2014HomeGoals ) {
+  winner = final2014Game[0]['Away Team Name'];
+} else {
+  winner = 'Draw';
+}
+const final2014Winner = winner;
 
 
 /*  Görev 2: 
@@ -25,8 +37,9 @@ const { fifaData } = require('./fifa.js')
 	💡 İPUCU - verilen data içindeki nesnelerin(objects) "Stage" anahtarına bakmalısınız
 */
 
-function Finaller(/* kodlar buraya */) {
-	
+function Finaller(/* kodlar buraya */fifaData) {
+	const allFinals = fifaData.filter(obj => obj.Stage === "Final");
+	return allFinals;
     /* kodlar buraya */
 }
 
@@ -39,8 +52,9 @@ function Finaller(/* kodlar buraya */) {
 	3. Finaller data setindeki tüm yılları içeren "years" adındaki diziyi(array) döndürecek
 	*/
 
-function Yillar(/* kodlar buraya */) {
-	
+function Yillar(/* kodlar buraya */fifaData, Finaller) {
+	const finals = Finaller(fifaData).map(obj => obj.Year);
+	return finals;
     /* kodlar buraya */
 }
 
@@ -53,10 +67,11 @@ function Yillar(/* kodlar buraya */) {
 	💡 İPUCU: Beraberlikler(ties) için şimdilik endişelenmeyin (Detaylı bilgi için README dosyasına bakabilirsiniz.)
 	4. Tüm kazanan ülkelerin isimlerini içeren `kazananlar` adında bir dizi(array) döndürecek(return)  */ 
 
-function Kazananlar(/* kodlar buraya */) {
-	
-    /* kodlar buraya */
-	
+function Kazananlar(/* kodlar buraya */fifaData, Finaller) {	
+    /* kodlar buraya */	
+	const kazananlar = Finaller(fifaData).map(obj => obj['Home Team Goals'] > obj['Away Team Goals'] ? obj['Home Team Name'] : obj['Away Team Name']
+	);
+return kazananlar;
 }
 
 
@@ -72,12 +87,20 @@ function Kazananlar(/* kodlar buraya */) {
 	💡 İPUCU: her cümlenin adım 4'te belirtilen cümleyle birebir aynı olması gerekmektedir.
 */
 
-function YillaraGoreKazananlar(/* kodlar buraya */) {
-	
+function YillaraGoreKazananlar(/* kodlar buraya */fifaData, Finaller, Yillar, Kazananlar) {	
 /* kodlar buraya */
+	const allFinals = Finaller(fifaData);
+	const yillar = Yillar(fifaData, Finaller);
+	const kazananlar = Kazananlar(fifaData, Finaller);
+	const consoleOutput = [];
+	
+	for (let i = 0; i < allFinals.length; i++) {
+		consoleOutput[i] = `${yillar[i]} yılında, ${kazananlar[i]} dünya kupasını kazandı!`;
+	}
 
+	return consoleOutput;
 }
-
+console.log(YillaraGoreKazananlar(fifaData, Finaller, Yillar, Kazananlar));
 
 /*  Görev 6: 
 	Bir higher order fonksiyonu olan `OrtalamaGolSayisi` isimli fonksiyona aşağıdakileri uygulayın: 
@@ -93,13 +116,21 @@ function YillaraGoreKazananlar(/* kodlar buraya */) {
 	
 */
 
-function OrtalamaGolSayisi(/* kodlar buraya */) {
-	
+ function OrtalamaGolSayisi(/* kodlar buraya */Finaller) {	
     /* kodlar buraya */
-	
+
+	let sumGameGoals = 0;
+	let countGames = 0;
+	const allFinals = Finaller(fifaData);
+	for (let i = 0; i < allFinals.length; i++) {
+		sumGameGoals += allFinals[i]['Home Team Goals'] + allFinals[i]['Away Team Goals'];
+		countGames++;
+	}
+	let avgGoal = sumGameGoals / countGames;
+	return avgGoal;
 }
 
-
+console.log(OrtalamaGolSayisi(Finaller));
 
 /// EKSTRA ÇALIŞMALAR ///
 
